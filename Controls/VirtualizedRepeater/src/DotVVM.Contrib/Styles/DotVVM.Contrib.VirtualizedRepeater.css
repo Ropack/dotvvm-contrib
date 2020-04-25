@@ -1,0 +1,21 @@
+﻿.virtualized-list-vertical {
+    max-height: 1500px;
+    overflow-y: scroll;
+}
+
+.card-vertical {
+    height: 145px;
+    box-sizing: border-box;
+}
+
+.virtualized-list-horizontal {
+    max-width: 1500px;
+    overflow-x: scroll;
+}
+
+.card-horizontal {
+    display: block;
+    float: left;
+    width: 100px;
+    box-sizing: border-box;
+}

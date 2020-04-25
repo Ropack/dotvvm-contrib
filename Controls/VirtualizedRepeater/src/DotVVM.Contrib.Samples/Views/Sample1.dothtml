@@ -1,0 +1,23 @@
+﻿@viewModel DotVVM.Contrib.Samples.ViewModels.Sample1ViewModel, DotVVM.Contrib.Samples
+@masterPage Views/_master.dotmaster
+
+<dot:Content ContentPlaceHolderID="MainContent">
+    <dot:Repeater DataSource="{value: People}">
+        <div>
+            <span>{{value: Id}}</span>
+            <span>{{value: Name}}</span>
+        </div>
+    </dot:Repeater>
+
+    <!-- make a sample usage of the control -->
+    <div class="virtualized-list-vertical">
+
+        <dc:VirtualizedRepeater DataSource="{value: People}" RowOrColumnSize="145">
+            <div class="card-vertical">
+                <span>{{value: Id}}</span>
+                <span>{{value: Name}}</span>
+            </div>
+        </dc:VirtualizedRepeater>
+    </div>
+</dot:Content>
+
