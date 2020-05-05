@@ -1,0 +1,58 @@
+﻿@viewModel DotVVM.Contrib.Samples.ViewModels.Sample2ViewModel, DotVVM.Contrib.Samples
+@masterPage Views/_master.dotmaster
+
+<dot:Content ContentPlaceHolderID="MainContent">
+    <div style="display: flex; width: 100%;">
+        <div style="flex: 1 1 auto;">
+            <style>
+                tr {
+                    height: 90px;
+                }
+
+                table, tr, td, th {
+                    border: 1px solid gray;
+                    border-collapse: collapse;
+                }
+
+                .virtualized-gridview-cell {
+                    border: 1px solid gray;
+                    border-right-width: 0px;
+                    border-bottom-width: 0px;
+                }
+
+                    .virtualized-gridview-cell:last-child {
+                        border-right-width: 1px;
+                    }
+                .virtualized-gridview-row:last-child .virtualized-gridview-cell {
+                    border-bottom-width: 1px;
+                }
+
+                .virtualized-gridview-header .virtualized-gridview-row {
+                    height: 90px;
+                }
+                    .virtualized-gridview-header .virtualized-gridview-row .virtualized-gridview-cell {
+                        border-bottom-width: 0px;
+                    }
+            </style>
+            <h2>GridView</h2>
+            <div style="height: 600px; overflow-y: scroll;">
+                <dot:GridView DataSource="{value: People}">
+                    <Columns>
+                        <dot:GridViewTextColumn Width="200px" HeaderText="Id" ValueBinding="{value: Id}" />
+                        <dot:GridViewTextColumn Width="100px" HeaderText="Name" ValueBinding="{value: Name}" />
+                    </Columns>
+                </dot:GridView>
+            </div>
+        </div>
+        <div style="flex: 1 1 auto;">
+            <h2>Virtualized GridView</h2>
+            <dc:VirtualizedGridView DataSource="{value: People}" RowHeight="90" style="height: 600px; overflow-y: scroll;" class="virtualized-gridview">
+                <Columns>
+                    <dot:GridViewTextColumn Width="200px" HeaderText="Id" ValueBinding="{value: Id}" />
+                    <dot:GridViewTextColumn Width="100px" HeaderText="Name" ValueBinding="{value: Name}" />
+                </Columns>
+            </dc:VirtualizedGridView>
+        </div>
+    </div>
+</dot:Content>
+

@@ -15,7 +15,6 @@ namespace DotVVM.Contrib
     public class VirtualizedRepeater : ItemsControl
     {
         private EmptyData? emptyDataContainer;
-        private DotvvmControl? clientSeparator;
         private DotvvmControl? clientSideTemplate;
 
         public VirtualizedRepeater(bool allowImplicitLifecycleRequirements = true)
@@ -53,8 +52,8 @@ namespace DotVVM.Contrib
         [MarkupOptions(AllowBinding = false, MappingMode = MappingMode.InnerElement)]
         public ITemplate? EmptyDataTemplate
         {
-            get { return (ITemplate?)GetValue(EmptyDataTemplateProperty); }
-            set { SetValue(EmptyDataTemplateProperty, value); }
+            get => (ITemplate?)GetValue(EmptyDataTemplateProperty);
+            set => SetValue(EmptyDataTemplateProperty, value);
         }
 
         public static readonly DotvvmProperty EmptyDataTemplateProperty =
@@ -68,8 +67,8 @@ namespace DotVVM.Contrib
         [CollectionElementDataContextChange(1)]
         public ITemplate ItemTemplate
         {
-            get { return (ITemplate)GetValue(ItemTemplateProperty)!; }
-            set { SetValue(ItemTemplateProperty, value); }
+            get => (ITemplate)GetValue(ItemTemplateProperty)!;
+            set => SetValue(ItemTemplateProperty, value);
         }
 
         public static readonly DotvvmProperty ItemTemplateProperty =
@@ -81,8 +80,8 @@ namespace DotVVM.Contrib
         [MarkupOptions(AllowBinding = false, MappingMode = MappingMode.InnerElement)]
         public ITemplate? SeparatorTemplate
         {
-            get { return (ITemplate?)GetValue(SeparatorTemplateProperty); }
-            set { SetValue(SeparatorTemplateProperty, value); }
+            get => (ITemplate?)GetValue(SeparatorTemplateProperty);
+            set => SetValue(SeparatorTemplateProperty, value);
         }
 
         public static readonly DotvvmProperty SeparatorTemplateProperty =
@@ -94,8 +93,8 @@ namespace DotVVM.Contrib
         [MarkupOptions(AllowBinding = false)]
         public string WrapperTagName
         {
-            get { return (string)GetValue(WrapperTagNameProperty)!; }
-            set { SetValue(WrapperTagNameProperty, value); }
+            get => (string)GetValue(WrapperTagNameProperty)!;
+            set => SetValue(WrapperTagNameProperty, value);
         }
 
         public static readonly DotvvmProperty WrapperTagNameProperty =
@@ -107,12 +106,31 @@ namespace DotVVM.Contrib
         [MarkupOptions(AllowBinding = false)]
         public bool RenderAsNamedTemplate
         {
-            get { return (bool)GetValue(RenderAsNamedTemplateProperty)!; }
-            set { SetValue(RenderAsNamedTemplateProperty, value); }
+            get => (bool)GetValue(RenderAsNamedTemplateProperty)!;
+            set => SetValue(RenderAsNamedTemplateProperty, value);
         }
 
         public static readonly DotvvmProperty RenderAsNamedTemplateProperty =
             DotvvmProperty.Register<bool, VirtualizedRepeater>(nameof(RenderAsNamedTemplate), defaultValue: false);
+
+
+        public Orientation Orientation
+        {
+            get => (Orientation)GetValue(OrientationProperty);
+            set => SetValue(OrientationProperty, value);
+        }
+
+        public static readonly DotvvmProperty OrientationProperty
+            = DotvvmProperty.Register<Orientation, VirtualizedRepeater>(c => c.Orientation, Orientation.Vertical);
+
+        public int ElementSize
+        {
+            get => (int)GetValue(ElementSizeProperty);
+            set => SetValue(ElementSizeProperty, value);
+        }
+
+        public static readonly DotvvmProperty ElementSizeProperty
+            = DotvvmProperty.Register<int, VirtualizedRepeater>(c => c.ElementSize, 100);
 
         protected override bool RendersHtmlTag => true;
 
@@ -133,68 +151,42 @@ namespace DotVVM.Contrib
         {
             TagName = WrapperTagName;
 
+            writer.RenderBeginTag(TagName);
+
             var (bindingName, bindingValue) = GetForeachKnockoutBindingGroup(context);
-            //if (RenderWrapperTag)
-            //{
+            var (optionsBindingName, optionsBindingValue) = GetForeachOptionsKnockoutBindingGroup(context);
+
             writer.AddKnockoutDataBind(bindingName, bindingValue);
-            writer.AddKnockoutDataBind("virtualized-foreach-row-height", RowOrColumnSize.ToString());
-            writer.AddKnockoutDataBind("virtualized-foreach-orientation", IsHorizontal ? "'horizontal'" : "'vertical'");
+            writer.AddKnockoutDataBind(optionsBindingName, optionsBindingValue);
 
-            //}
-            //else
-            //{
-            //    writer.WriteKnockoutDataBindComment(bindingName, bindingValue.ToString());
-            //}
-
-            //if (RenderWrapperTag)
-            //{
-            base.RenderBeginTag(writer, context);
-            //}
+            
+            writer.RenderBeginTag(TagName);
         }
 
-        public bool IsHorizontal
+        private (string bindingName, KnockoutBindingGroup bindingValue) GetForeachOptionsKnockoutBindingGroup(IDotvvmRequestContext context)
         {
-            get { return (bool)GetValue(IsHorizontalProperty); }
-            set { SetValue(IsHorizontalProperty, value); }
+            var value = new KnockoutBindingGroup();
+
+            value.Add("elementSize", ElementSize.ToString());
+            value.Add("orientation", $"'{Orientation.ToString().ToLower()}'");
+
+            return ("virtualized-foreach-options", value);
         }
-
-        public static readonly DotvvmProperty IsHorizontalProperty
-            = DotvvmProperty.Register<bool, VirtualizedRepeater>(c => c.IsHorizontal, false);
-
-        public int RowOrColumnSize
-        {
-            get { return (int)GetValue(RowOrColumnSizeProperty); }
-            set { SetValue(RowOrColumnSizeProperty, value); }
-        }
-
-        public static readonly DotvvmProperty RowOrColumnSizeProperty
-            = DotvvmProperty.Register<int, VirtualizedRepeater>(c => c.RowOrColumnSize, 100);
-
 
         private (string bindingName, KnockoutBindingGroup bindingValue) GetForeachKnockoutBindingGroup(IDotvvmRequestContext context)
         {
-            //var useTemplate = this.RenderAsNamedTemplate;
             var value = new KnockoutBindingGroup();
-
 
             var javascriptDataSourceExpression = GetForeachDataBindExpression().GetKnockoutBindingExpression(this);
             value.Add("data", javascriptDataSourceExpression);
 
-            //if (useTemplate)
-            //{
-            //    var itemTemplateId = context.ResourceManager.AddTemplateResource(context, clientSideTemplate!);
-
-            //    value.Add("name", itemTemplateId, true);
-            //}
-
-            //if (clientSeparator != null)
-            //{
-            //    // separator has to be always rendered as a named template
-            //    var separatorTemplateId = context.ResourceManager.AddTemplateResource(context, clientSeparator);
-            //    value.Add("separatorTemplate", separatorTemplateId, true);
-            //}
-
             return ("virtualized-foreach", value);
+        }
+
+        private void RenderContainerWrapper(IHtmlWriter writer, IDotvvmRequestContext context)
+        {
+            var container = new HtmlGenericControl("div");
+            //writer.(container);
         }
 
         /// <summary>
@@ -207,14 +199,9 @@ namespace DotVVM.Contrib
 
         protected override void RenderEndTag(IHtmlWriter writer, IDotvvmRequestContext context)
         {
-            //if (RenderWrapperTag)
-            //{
             base.RenderEndTag(writer, context);
-            //}
-            //else
-            //{
-            //writer.WriteKnockoutDataBindEndComment();
-            //}
+
+            writer.RenderEndTag();
 
             emptyDataContainer?.Render(writer, context);
         }
@@ -285,7 +272,6 @@ namespace DotVVM.Contrib
         {
             Children.Clear();
             emptyDataContainer = null;
-            clientSeparator = null;
             clientSideTemplate = null;
 
             if (DataSource != null)
@@ -310,7 +296,7 @@ namespace DotVVM.Contrib
             {
                 if (SeparatorTemplate != null)
                 {
-                    Children.Add(clientSeparator = GetSeparator(context));
+                    Children.Add(GetSeparator(context));
                 }
 
                 Children.Add(clientSideTemplate = GetItem(context));
@@ -336,5 +322,11 @@ namespace DotVVM.Contrib
             container.SetValue(Internal.PathFragmentProperty, GetPathFragmentExpression() + "/[" + index + "]");
             container.ID = index.ToString();
         }
+    }
+
+    public enum Orientation
+    {
+        Vertical = 1,
+        Horizontal = 2
     }
 }

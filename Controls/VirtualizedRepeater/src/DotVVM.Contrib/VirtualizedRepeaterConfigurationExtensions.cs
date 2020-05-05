@@ -20,6 +20,13 @@ namespace DotVVM.Contrib
                 TagPrefix = "dc"
             });
 
+            config.Markup.Controls.Add(new DotvvmControlConfiguration()
+            {
+                Assembly = typeof(VirtualizedGridView).Assembly.GetName().Name,
+                Namespace = typeof(VirtualizedGridView).Namespace,
+                TagPrefix = "dc"
+            });
+
             // register additional resources for the control and set up dependencies
             config.Resources.Register("dotvvm.contrib.VirtualizedRepeater", new ScriptResource()
             {
