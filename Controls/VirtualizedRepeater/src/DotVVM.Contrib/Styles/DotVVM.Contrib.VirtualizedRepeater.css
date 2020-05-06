@@ -1,21 +1,15 @@
-﻿.virtualized-list-vertical {
-    max-height: 1500px;
-    overflow-y: scroll;
-}
-
-.card-vertical {
-    height: 145px;
+﻿.virtualized-repeater-element {
     box-sizing: border-box;
-}
-
-.virtualized-list-horizontal {
-    max-width: 1500px;
-    overflow-x: scroll;
-}
-
-.card-horizontal {
     display: block;
-    float: left;
-    width: 100px;
+}
+.virtualized-repeater-container {
     box-sizing: border-box;
+}
+.virtualized-repeater-horizontal-container {
+    display: flex;
+    -moz-flex-flow: row;
+    -ms-flex-flow: row;
+    -o-flex-flow: row;
+    -webkit-flex-flow: row;
+    flex-flow: row;
 }

@@ -2,44 +2,51 @@
 @masterPage Views/_master.dotmaster
 
 <dot:Content ContentPlaceHolderID="MainContent">
+    <style>
+        tr {
+            height: 90px;
+        }
+
+        table, tr, td, th {
+            border: 1px solid gray;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 10px;
+        }
+
+        .virtualized-gridview-cell {
+            border: 1px solid gray;
+            border-right-width: 0px;
+            border-bottom-width: 0px;
+            padding: 10px;
+        }
+
+            .virtualized-gridview-cell:last-child {
+                border-right-width: 1px;
+            }
+
+        .virtualized-gridview-row:last-child .virtualized-gridview-cell {
+            border-bottom-width: 1px;
+        }
+
+        .virtualized-gridview-header .virtualized-gridview-row {
+            height: 90px;
+        }
+
+            .virtualized-gridview-header .virtualized-gridview-row .virtualized-gridview-cell {
+                border-bottom-width: 0px;
+            }
+    </style>
     <div style="display: flex; width: 100%;">
         <div style="flex: 1 1 auto;">
-            <style>
-                tr {
-                    height: 90px;
-                }
-
-                table, tr, td, th {
-                    border: 1px solid gray;
-                    border-collapse: collapse;
-                }
-
-                .virtualized-gridview-cell {
-                    border: 1px solid gray;
-                    border-right-width: 0px;
-                    border-bottom-width: 0px;
-                }
-                    .virtualized-gridview-cell:last-child {
-                        border-right-width: 1px;
-                    }
-
-                .virtualized-gridview-row:last-child .virtualized-gridview-cell {
-                    border-bottom-width: 1px;
-                }
-
-                .virtualized-gridview-header .virtualized-gridview-row {
-                    height: 90px;
-                }
-                    .virtualized-gridview-header .virtualized-gridview-row .virtualized-gridview-cell {
-                        border-bottom-width: 0px;
-                    }
-            </style>
             <h2>GridView</h2>
             <div style="height: 600px; overflow-y: scroll;">
                 <dot:GridView DataSource="{value: People}">
                     <Columns>
-                        <dot:GridViewTextColumn Width="200px" HeaderText="Id" ValueBinding="{value: Id}" />
-                        <dot:GridViewTextColumn Width="100px" HeaderText="Name" ValueBinding="{value: Name}" />
+                        <dot:GridViewTextColumn Width="180px" HeaderText="Id" ValueBinding="{value: Id}" />
+                        <dot:GridViewTextColumn Width="80px" HeaderText="Name" ValueBinding="{value: Name}" />
                     </Columns>
                 </dot:GridView>
             </div>

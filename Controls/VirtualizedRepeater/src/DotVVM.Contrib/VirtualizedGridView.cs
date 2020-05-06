@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DotVVM.Framework.Binding;
 using DotVVM.Framework.Binding.Expressions;
@@ -13,6 +12,8 @@ namespace DotVVM.Contrib
     [ControlMarkupOptions(AllowContent = false, DefaultContentProperty = nameof(Columns))]
     public sealed class VirtualizedGridView : ItemsControl
     {
+        private const string ClassSeparator = " ";
+
         private EmptyData? emptyDataContainer;
         private HtmlGenericControl? head;
 
@@ -57,9 +58,10 @@ namespace DotVVM.Contrib
 
         public int RowHeight
         {
-            get => (int)GetValue(RowHeightProperty);
+            get => (int) GetValue(RowHeightProperty);
             set => SetValue(RowHeightProperty, value);
         }
+
         public static readonly DotvvmProperty RowHeightProperty
             = DotvvmProperty.Register<int, VirtualizedGridView>(c => c.RowHeight, 100);
 
@@ -70,8 +72,8 @@ namespace DotVVM.Contrib
         [MarkupOptions(AllowBinding = false)]
         public bool ShowHeaderWhenNoData
         {
-            get { return (bool) GetValue(ShowHeaderWhenNoDataProperty)!; }
-            set { SetValue(ShowHeaderWhenNoDataProperty, value); }
+            get => (bool) GetValue(ShowHeaderWhenNoDataProperty)!;
+            set => SetValue(ShowHeaderWhenNoDataProperty, value);
         }
 
         public static readonly DotvvmProperty ShowHeaderWhenNoDataProperty =
@@ -120,7 +122,6 @@ namespace DotVVM.Contrib
 
                     index++;
                 }
-
             }
 
             // add empty item
@@ -138,13 +139,11 @@ namespace DotVVM.Contrib
         {
             head = new HtmlGenericControl("div");
             head.CssClasses.Add("virtualized-gridview-header", true);
-            head.Attributes["style"] = "width: fit-content;";
 
             Children.Add(head);
 
             var headerRow = new HtmlGenericControl("div");
             headerRow.CssClasses.Add("virtualized-gridview-row", true);
-            headerRow.Attributes["style"] = "display: flex;";
             head.Children.Add(headerRow);
             foreach (var column in Columns!)
             {
@@ -208,7 +207,7 @@ namespace DotVVM.Contrib
         private HtmlGenericControl CreateRow(DataItemContainer placeholder)
         {
             var row = new HtmlGenericControl("div");
-            row.Attributes["style"] = $"display: flex; height: {RowHeight}px;";
+            row.Attributes["style"] = $"height: {RowHeight}px;";
             row.CssClasses.Add("virtualized-gridview-row", true);
             placeholder.Children.Add(row);
             return row;
@@ -220,15 +219,14 @@ namespace DotVVM.Contrib
             head?.Render(writer, context);
 
             // render body
-            writer.AddKnockoutDataBind("virtualized-foreach","dotvvm.evaluator.getDataSourceItems($gridViewDataSet)");
+            writer.AddKnockoutDataBind("virtualized-foreach", "dotvvm.evaluator.getDataSourceItems($gridViewDataSet)");
 
             var (optionsBindingName, optionsBindingValue) = GetForeachOptionsKnockoutBindingGroup();
             writer.AddKnockoutDataBind(optionsBindingName, optionsBindingValue);
 
-            writer.AddAttribute("class", "virtualized-gridview-body", true, ",");
-            writer.AddAttribute("style", "width: fit-content;");
+            writer.AddAttribute("class", "virtualized-gridview-body", true, ClassSeparator);
             writer.RenderBeginTag("div");
-            
+
             // render contents
             var placeholder = new DataItemContainer {DataContext = null};
             placeholder.SetDataContextTypeFromDataSource(GetBinding(DataSourceProperty));

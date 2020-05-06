@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using DotVVM.Framework.Binding;
 using DotVVM.Framework.Controls;
@@ -12,6 +13,8 @@ namespace DotVVM.Contrib
     [ControlMarkupOptions(AllowContent = false, DefaultContentProperty = nameof(ItemTemplate))]
     public sealed class VirtualizedRepeater : ItemsControl
     {
+        private const string ClassSeparator = " ";
+
         private EmptyData? emptyDataContainer;
         private DotvvmControl? clientSideTemplate;
 
@@ -143,10 +146,11 @@ namespace DotVVM.Contrib
         {
             TagName = WrapperTagName;
 
+            RenderContainerAttributes(writer);
             writer.RenderBeginTag(TagName);
 
-            var (bindingName, bindingValue) = GetForeachKnockoutBindingGroup(context);
-            var (optionsBindingName, optionsBindingValue) = GetForeachOptionsKnockoutBindingGroup(context);
+            var (bindingName, bindingValue) = GetForeachKnockoutBindingGroup();
+            var (optionsBindingName, optionsBindingValue) = GetForeachOptionsKnockoutBindingGroup();
 
             writer.AddKnockoutDataBind(bindingName, bindingValue);
             writer.AddKnockoutDataBind(optionsBindingName, optionsBindingValue);
@@ -155,7 +159,23 @@ namespace DotVVM.Contrib
             writer.RenderBeginTag(TagName);
         }
 
-        private (string bindingName, KnockoutBindingGroup bindingValue) GetForeachOptionsKnockoutBindingGroup(IDotvvmRequestContext context)
+        private void RenderContainerAttributes(IHtmlWriter writer)
+        {
+            writer.AddAttribute("class", "virtualized-repeater-container", true, ClassSeparator);
+            switch (Orientation)
+            {
+                case OrientationMode.Vertical:
+                    writer.AddAttribute("class", "virtualized-repeater-vertical-container", true, ClassSeparator);
+                    break;
+                case OrientationMode.Horizontal:
+                    writer.AddAttribute("class", "virtualized-repeater-horizontal-container", true, ClassSeparator);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(Orientation), $"Unknown value {Orientation} for property {nameof(Orientation)}.");
+            }
+        }
+
+        private (string bindingName, KnockoutBindingGroup bindingValue) GetForeachOptionsKnockoutBindingGroup()
         {
             var value = new KnockoutBindingGroup();
 
@@ -165,7 +185,7 @@ namespace DotVVM.Contrib
             return ("virtualized-foreach-options", value);
         }
 
-        private (string bindingName, KnockoutBindingGroup bindingValue) GetForeachKnockoutBindingGroup(IDotvvmRequestContext context)
+        private (string bindingName, KnockoutBindingGroup bindingValue) GetForeachKnockoutBindingGroup()
         {
             var value = new KnockoutBindingGroup();
 
@@ -180,7 +200,23 @@ namespace DotVVM.Contrib
         /// </summary>
         protected override void RenderContents(IHtmlWriter writer, IDotvvmRequestContext context)
         {
+            RenderContentAttributes(writer);
             clientSideTemplate!.Render(writer, context);
+        }
+
+        private void RenderContentAttributes(IHtmlWriter writer)
+        {
+            switch (Orientation)
+            {
+                case OrientationMode.Vertical:
+                    writer.AddAttribute("style", $"height: {ElementSize}px;");
+                    break;
+                case OrientationMode.Horizontal:
+                    writer.AddAttribute("style", $"width: {ElementSize}px;");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(Orientation), $"Unknown value {Orientation} for property {nameof(Orientation)}.");
+            }
         }
 
         protected override void RenderEndTag(IHtmlWriter writer, IDotvvmRequestContext context)

@@ -2,10 +2,19 @@
 @masterPage Views/_master.dotmaster
 
 <dot:Content ContentPlaceHolderID="MainContent">
+    <style>
+        .repeater {
+            height: 600px;
+            overflow-y: scroll;
+        }
+        .card-vertical {
+            height: 145px;
+        }
+    </style>
     <div style="display: flex; width: 100%;">
         <div style="flex: 1 1 auto;">
             <h2>Repeater</h2>
-            <dot:Repeater DataSource="{value: People}" style="height: 600px; overflow-y: scroll;">
+            <dot:Repeater DataSource="{value: People}" class="repeater">
                 <div class="card-vertical">
                     <span>{{value: Id}}</span>
                     <span>{{value: Name}}</span>
@@ -14,8 +23,8 @@
         </div>
         <div style="flex: 1 1 auto;">
             <h2>Virtualized Repeater</h2>
-            <dc:VirtualizedRepeater DataSource="{value: People}" ElementSize="145" style="height: 600px; overflow-y: scroll;">
-                <div class="card-vertical">
+            <dc:VirtualizedRepeater DataSource="{value: People}" Orientation="Vertical" ElementSize="145" class="repeater">
+                <div>
                     <span>{{value: Id}}</span>
                     <span>{{value: Name}}</span>
                 </div>

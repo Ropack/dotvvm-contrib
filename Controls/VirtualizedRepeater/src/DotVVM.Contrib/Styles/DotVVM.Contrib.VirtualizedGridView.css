@@ -8,9 +8,16 @@
 }
 .virtualized-gridview-header {
     font-weight: bold;
+    width: fit-content;
 }
 .virtualized-gridview-header .virtualized-gridview-cell {
     -o-justify-content: center;
     -webkit-justify-content: center;
     justify-content: center;
+}
+.virtualized-gridview-body {
+    width: fit-content;
+}
+.virtualized-gridview-row {
+    display: flex;
 }
