@@ -1,0 +1,16 @@
+﻿.virtualized-gridview-cell {
+    display: flex;
+    -ms-align-items: center;
+    -o-align-items: center;
+    -webkit-align-items: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+.virtualized-gridview-header {
+    font-weight: bold;
+}
+.virtualized-gridview-header .virtualized-gridview-cell {
+    -o-justify-content: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}

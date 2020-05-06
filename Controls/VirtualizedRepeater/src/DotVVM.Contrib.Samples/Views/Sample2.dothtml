@@ -19,10 +19,10 @@
                     border-right-width: 0px;
                     border-bottom-width: 0px;
                 }
-
                     .virtualized-gridview-cell:last-child {
                         border-right-width: 1px;
                     }
+
                 .virtualized-gridview-row:last-child .virtualized-gridview-cell {
                     border-bottom-width: 1px;
                 }

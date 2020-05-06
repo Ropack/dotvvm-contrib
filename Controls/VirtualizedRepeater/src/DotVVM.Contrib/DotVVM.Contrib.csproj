@@ -24,12 +24,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Scripts\DotVVM.Contrib.VirtualizedGridView.js" />
     <None Remove="Scripts\virtualized-foreach.js" />
+    <None Remove="Styles\DotVVM.Contrib.VirtualizedGridView.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\DotVVM.Contrib.VirtualizedGridView.js" />
     <EmbeddedResource Include="Scripts\DotVVM.Contrib.VirtualizedRepeater.js" />
     <EmbeddedResource Include="Scripts\virtualized-foreach.js" />
+    <EmbeddedResource Include="Styles\DotVVM.Contrib.VirtualizedGridView.css" />
     <EmbeddedResource Include="Styles\DotVVM.Contrib.VirtualizedRepeater.css" />
   </ItemGroup>
 

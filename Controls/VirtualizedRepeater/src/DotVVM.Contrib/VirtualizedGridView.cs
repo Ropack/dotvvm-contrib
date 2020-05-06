@@ -131,6 +131,7 @@ namespace DotVVM.Contrib
 
         protected override void OnPreRender(IDotvvmRequestContext context)
         {
+            context.ResourceManager.AddRequiredResource("dotvvm.contrib.VirtualizedGridView");
             context.ResourceManager.AddRequiredResource("virtualizedForeach");
 
             DataBind(context);
