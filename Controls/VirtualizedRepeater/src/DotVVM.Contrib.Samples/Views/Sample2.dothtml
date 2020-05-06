@@ -38,12 +38,17 @@
             .virtualized-gridview-header .virtualized-gridview-row .virtualized-gridview-cell {
                 border-bottom-width: 0px;
             }
+
+        .scrollable-container {
+            height: 600px;
+            overflow-y: scroll;
+        }
     </style>
     <div style="display: flex; width: 100%;">
         <div style="flex: 1 1 auto;">
             <h2>GridView</h2>
-            <div style="height: 600px; overflow-y: scroll;">
-                <dot:GridView DataSource="{value: People}">
+            <div class="scrollable-container">
+                <dot:GridView DataSource="{value: People}" RenderSettings.Mode="Client">
                     <Columns>
                         <dot:GridViewTextColumn Width="180px" HeaderText="Id" ValueBinding="{value: Id}" />
                         <dot:GridViewTextColumn Width="80px" HeaderText="Name" ValueBinding="{value: Name}" />
@@ -53,7 +58,7 @@
         </div>
         <div style="flex: 1 1 auto;">
             <h2>Virtualized GridView</h2>
-            <dc:VirtualizedGridView DataSource="{value: People}" RowHeight="90" style="height: 600px; overflow-y: scroll;" class="virtualized-gridview">
+            <dc:VirtualizedGridView DataSource="{value: People}" RowHeight="90" class="virtualized-gridview scrollable-container">
                 <Columns>
                     <dot:GridViewTextColumn Width="200px" HeaderText="Id" ValueBinding="{value: Id}" />
                     <dot:GridViewTextColumn Width="100px" HeaderText="Name" ValueBinding="{value: Name}" />
