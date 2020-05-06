@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using DotVVM.Framework.Binding;
-using DotVVM.Framework.Compilation.ControlTree.Resolved;
-using DotVVM.Framework.Compilation.Styles;
 using DotVVM.Framework.Controls;
 using DotVVM.Framework.Hosting;
 
@@ -12,7 +10,7 @@ namespace DotVVM.Contrib
     /// Renders a ...
     /// </summary>
     [ControlMarkupOptions(AllowContent = false, DefaultContentProperty = nameof(ItemTemplate))]
-    public class VirtualizedRepeater : ItemsControl
+    public sealed class VirtualizedRepeater : ItemsControl
     {
         private EmptyData? emptyDataContainer;
         private DotvvmControl? clientSideTemplate;
@@ -40,19 +38,13 @@ namespace DotVVM.Contrib
             base.OnPreRender(context);
         }
 
-        [ApplyControlStyle]
-        public static void OnCompilation(ResolvedControl control)
-        {
-            control.SetProperty(new ResolvedPropertyValue(Internal.IsNamingContainerProperty, true), replace: false, error: out _);
-        }
-
         /// <summary>
         /// Gets or sets the template which will be displayed when the DataSource is empty.
         /// </summary>
         [MarkupOptions(AllowBinding = false, MappingMode = MappingMode.InnerElement)]
         public ITemplate? EmptyDataTemplate
         {
-            get => (ITemplate?)GetValue(EmptyDataTemplateProperty);
+            get => (ITemplate?) GetValue(EmptyDataTemplateProperty);
             set => SetValue(EmptyDataTemplateProperty, value);
         }
 
@@ -67,7 +59,7 @@ namespace DotVVM.Contrib
         [CollectionElementDataContextChange(1)]
         public ITemplate ItemTemplate
         {
-            get => (ITemplate)GetValue(ItemTemplateProperty)!;
+            get => (ITemplate) GetValue(ItemTemplateProperty)!;
             set => SetValue(ItemTemplateProperty, value);
         }
 
@@ -80,7 +72,7 @@ namespace DotVVM.Contrib
         [MarkupOptions(AllowBinding = false, MappingMode = MappingMode.InnerElement)]
         public ITemplate? SeparatorTemplate
         {
-            get => (ITemplate?)GetValue(SeparatorTemplateProperty);
+            get => (ITemplate?) GetValue(SeparatorTemplateProperty);
             set => SetValue(SeparatorTemplateProperty, value);
         }
 
@@ -93,7 +85,7 @@ namespace DotVVM.Contrib
         [MarkupOptions(AllowBinding = false)]
         public string WrapperTagName
         {
-            get => (string)GetValue(WrapperTagNameProperty)!;
+            get => (string) GetValue(WrapperTagNameProperty)!;
             set => SetValue(WrapperTagNameProperty, value);
         }
 
@@ -106,7 +98,7 @@ namespace DotVVM.Contrib
         [MarkupOptions(AllowBinding = false)]
         public bool RenderAsNamedTemplate
         {
-            get => (bool)GetValue(RenderAsNamedTemplateProperty)!;
+            get => (bool) GetValue(RenderAsNamedTemplateProperty)!;
             set => SetValue(RenderAsNamedTemplateProperty, value);
         }
 
@@ -114,18 +106,18 @@ namespace DotVVM.Contrib
             DotvvmProperty.Register<bool, VirtualizedRepeater>(nameof(RenderAsNamedTemplate), defaultValue: false);
 
 
-        public Orientation Orientation
+        public OrientationMode Orientation
         {
-            get => (Orientation)GetValue(OrientationProperty);
+            get => (OrientationMode) GetValue(OrientationProperty);
             set => SetValue(OrientationProperty, value);
         }
 
         public static readonly DotvvmProperty OrientationProperty
-            = DotvvmProperty.Register<Orientation, VirtualizedRepeater>(c => c.Orientation, Orientation.Vertical);
+            = DotvvmProperty.Register<OrientationMode, VirtualizedRepeater>(c => c.Orientation, OrientationMode.Vertical);
 
         public int ElementSize
         {
-            get => (int)GetValue(ElementSizeProperty);
+            get => (int) GetValue(ElementSizeProperty);
             set => SetValue(ElementSizeProperty, value);
         }
 
@@ -159,7 +151,7 @@ namespace DotVVM.Contrib
             writer.AddKnockoutDataBind(bindingName, bindingValue);
             writer.AddKnockoutDataBind(optionsBindingName, optionsBindingValue);
 
-            
+
             writer.RenderBeginTag(TagName);
         }
 
@@ -181,12 +173,6 @@ namespace DotVVM.Contrib
             value.Add("data", javascriptDataSourceExpression);
 
             return ("virtualized-foreach", value);
-        }
-
-        private void RenderContainerWrapper(IHtmlWriter writer, IDotvvmRequestContext context)
-        {
-            var container = new HtmlGenericControl("div");
-            //writer.(container);
         }
 
         /// <summary>
@@ -230,7 +216,7 @@ namespace DotVVM.Contrib
             if (allowMemoizationRetrive && item != null && childrenCache.TryGetValue(item, out var container2) && container2.Parent == null)
             {
                 Debug.Assert(item == container2.GetValueRaw(DataContextProperty));
-                SetUpServerItem(context, item, (int)index!, container2);
+                SetUpServerItem(context, item, (int) index!, container2);
                 return container2;
             }
 
@@ -242,7 +228,7 @@ namespace DotVVM.Contrib
             }
             else
             {
-                SetUpServerItem(context, item!, (int)index!, container);
+                SetUpServerItem(context, item!, (int) index!, container);
             }
 
             ItemTemplate.BuildContent(context, container);
@@ -322,11 +308,11 @@ namespace DotVVM.Contrib
             container.SetValue(Internal.PathFragmentProperty, GetPathFragmentExpression() + "/[" + index + "]");
             container.ID = index.ToString();
         }
-    }
 
-    public enum Orientation
-    {
-        Vertical = 1,
-        Horizontal = 2
+        public enum OrientationMode
+        {
+            Vertical = 1,
+            Horizontal = 2
+        }
     }
 }

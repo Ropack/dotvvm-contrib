@@ -11,10 +11,9 @@ using DotVVM.Framework.Utils;
 namespace DotVVM.Contrib
 {
     [ControlMarkupOptions(AllowContent = false, DefaultContentProperty = nameof(Columns))]
-    public class VirtualizedGridView : ItemsControl
+    public sealed class VirtualizedGridView : ItemsControl
     {
         private EmptyData? emptyDataContainer;
-        private int numberOfRows;
         private HtmlGenericControl? head;
 
         public VirtualizedGridView() : base("div")
@@ -22,25 +21,10 @@ namespace DotVVM.Contrib
             SetValue(Internal.IsNamingContainerProperty, true);
 
             Columns = new List<GridViewColumn>();
-            //RowDecorators = new List<Decorator>();
 
             if (GetType() == typeof(GridView))
                 LifecycleRequirements &= ~(ControlLifecycleRequirements.InvokeMissingInit | ControlLifecycleRequirements.InvokeMissingLoad);
         }
-
-
-        /// <summary>
-        /// Gets or sets the place where the filters will be created.
-        /// </summary>
-        public GridViewFilterPlacement FilterPlacement
-        {
-            get => (GridViewFilterPlacement) GetValue(FilterPlacementProperty)!;
-            set => SetValue(FilterPlacementProperty, value);
-        }
-
-        public static readonly DotvvmProperty FilterPlacementProperty
-            = DotvvmProperty.Register<GridViewFilterPlacement, VirtualizedGridView>(c => c.FilterPlacement, GridViewFilterPlacement.HeaderRow);
-
 
         /// <summary>
         /// Gets or sets the template which will be displayed when the DataSource is empty.
@@ -80,35 +64,6 @@ namespace DotVVM.Contrib
             = DotvvmProperty.Register<int, VirtualizedGridView>(c => c.RowHeight, 100);
 
 
-        ///// <summary>
-        ///// Gets or sets a list of decorators that will be applied on each row which is not in the edit mode.
-        ///// </summary>
-        //[MarkupOptions(AllowBinding = false, MappingMode = MappingMode.InnerElement)]
-        //[ControlPropertyBindingDataContextChange("DataSource")]
-        //[CollectionElementDataContextChange(1)]
-        //public List<Decorator>? RowDecorators
-        //{
-        //    get { return (List<Decorator>?)GetValue(RowDecoratorsProperty); }
-        //    set { SetValue(RowDecoratorsProperty, value); }
-        //}
-
-        //public static readonly DotvvmProperty RowDecoratorsProperty =
-        //    DotvvmProperty.Register<List<Decorator>?, VirtualizedGridView>(c => c.RowDecorators);
-
-
-        /// <summary>
-        /// Gets or sets the command that will be triggered when the user changed the sort order.
-        /// </summary>
-        [MarkupOptions(AllowHardCodedValue = false)]
-        public Action<string?>? SortChanged
-        {
-            get { return (Action<string?>?) GetValue(SortChangedProperty); }
-            set { SetValue(SortChangedProperty, value); }
-        }
-
-        public static readonly DotvvmProperty SortChangedProperty =
-            DotvvmProperty.Register<Action<string>?, VirtualizedGridView>(c => c.SortChanged, null);
-
         /// <summary>
         /// Gets or sets whether the header row should be displayed when the grid is empty.
         /// </summary>
@@ -147,31 +102,7 @@ namespace DotVVM.Contrib
             var dataSourceBinding = GetDataSourceBinding();
             var dataSource = DataSource;
 
-            var sortCommand =
-                dataSource is ISortableGridViewDataSet sortableSet && sortableSet.SortingOptions is ISortingOptions sortOptions
-                    ? expr =>
-                    {
-                        if (sortOptions.SortExpression == expr)
-                        {
-                            sortOptions.SortDescending ^= true;
-                        }
-                        else
-                        {
-                            sortOptions.SortExpression = expr;
-                            sortOptions.SortDescending = false;
-                        }
-
-                        (sortableSet as IPageableGridViewDataSet)?.GoToFirstPage();
-                    }
-                    : SortChanged;
-
-            // WORKAROUND: DataSource is null => don't throw exception
-            if (sortCommand == null && dataSource == null)
-            {
-                sortCommand = s => { throw new DotvvmControlException(this, "Cannot sort when DataSource is null."); };
-            }
-
-            CreateHeaderRow(context, sortCommand);
+            CreateHeaderRow();
 
             var index = 0;
             if (dataSource != null)
@@ -190,33 +121,26 @@ namespace DotVVM.Contrib
                     index++;
                 }
 
-                numberOfRows = index;
-            }
-            else
-            {
-                numberOfRows = 0;
             }
 
             // add empty item
             if (EmptyDataTemplate != null)
             {
                 emptyDataContainer = new EmptyData();
-                emptyDataContainer.SetValue(EmptyData.VisibleProperty, GetValueRaw(VisibleProperty));
+                emptyDataContainer.SetValue(VisibleProperty, GetValueRaw(VisibleProperty));
                 emptyDataContainer.SetBinding(DataSourceProperty, dataSourceBinding);
                 EmptyDataTemplate.BuildContent(context, emptyDataContainer);
                 Children.Add(emptyDataContainer);
             }
         }
 
-        protected virtual void CreateHeaderRow(IDotvvmRequestContext context, Action<string?>? sortCommand)
+        private void CreateHeaderRow()
         {
             head = new HtmlGenericControl("div");
             head.CssClasses.Add("virtualized-gridview-header", true);
             head.Attributes["style"] = "width: fit-content;";
 
             Children.Add(head);
-
-            var gridViewDataSet = DataSource as IGridViewDataSet;
 
             var headerRow = new HtmlGenericControl("div");
             headerRow.CssClasses.Add("virtualized-gridview-row", true);
@@ -229,28 +153,10 @@ namespace DotVVM.Contrib
                 SetCellAttributes(column, cell, true);
                 headerRow.Children.Add(cell);
 
-                //column.CreateHeaderControls(context, this, sortCommand, cell, gridViewDataSet);
-                Literal literal = new Literal(true);
-                literal.SetValue(Literal.TextProperty, column.GetValueRaw(GridViewColumn.HeaderTextProperty, true));
-                cell.Children.Add((DotvvmControl)literal);
-                //if (FilterPlacement == GridViewFilterPlacement.HeaderRow)
-                //{
-                //    column.CreateFilterControls(context, this, cell, gridViewDataSet);
-                //}
+                Literal literal = new Literal();
+                literal.SetValue(Literal.TextProperty, column.GetValueRaw(GridViewColumn.HeaderTextProperty));
+                cell.Children.Add(literal);
             }
-
-            //if (FilterPlacement == GridViewFilterPlacement.ExtraRow)
-            //{
-            //    headerRow = new HtmlGenericControl("tr");
-            //    head.Children.Add(headerRow);
-            //    foreach (var column in Columns!)
-            //    {
-            //        var cell = new HtmlGenericControl("th");
-            //        SetCellAttributes(column, cell, true);
-            //        headerRow.Children.Add(cell);
-            //        column.CreateFilterControls(context, this, cell, gridViewDataSet);
-            //    }
-            //}
         }
 
         private static void SetCellAttributes(GridViewColumn column, HtmlGenericControl cell, bool isHeaderCell)
@@ -287,7 +193,7 @@ namespace DotVVM.Contrib
             var row = CreateRow(placeholder);
 
             // create cells
-            foreach (var column in Columns)
+            foreach (var column in Columns!)
             {
                 var cell = new HtmlGenericControl("div");
                 cell.CssClasses.Add("virtualized-gridview-cell", true);
@@ -316,7 +222,7 @@ namespace DotVVM.Contrib
             // render body
             writer.AddKnockoutDataBind("virtualized-foreach","dotvvm.evaluator.getDataSourceItems($gridViewDataSet)");
 
-            var (optionsBindingName, optionsBindingValue) = GetForeachOptionsKnockoutBindingGroup(context);
+            var (optionsBindingName, optionsBindingValue) = GetForeachOptionsKnockoutBindingGroup();
             writer.AddKnockoutDataBind(optionsBindingName, optionsBindingValue);
 
             writer.AddAttribute("class", "virtualized-gridview-body", true, ",");
@@ -324,8 +230,6 @@ namespace DotVVM.Contrib
             writer.RenderBeginTag("div");
             
             // render contents
-
-
             var placeholder = new DataItemContainer {DataContext = null};
             placeholder.SetDataContextTypeFromDataSource(GetBinding(DataSourceProperty));
             placeholder.SetValue(Internal.PathFragmentProperty, GetPathFragmentExpression() + "/[$index]");
@@ -333,7 +237,6 @@ namespace DotVVM.Contrib
             Children.Add(placeholder);
             CreateRowWithCells(context, placeholder);
             placeholder.Render(writer, context);
-
 
             writer.RenderEndTag();
         }
@@ -361,7 +264,7 @@ namespace DotVVM.Contrib
             emptyDataContainer?.Render(writer, context);
         }
 
-        private (string bindingName, KnockoutBindingGroup bindingValue) GetForeachOptionsKnockoutBindingGroup(IDotvvmRequestContext context)
+        private (string bindingName, KnockoutBindingGroup bindingValue) GetForeachOptionsKnockoutBindingGroup()
         {
             var value = new KnockoutBindingGroup();
 
@@ -379,7 +282,7 @@ namespace DotVVM.Contrib
 
         public override IEnumerable<DotvvmBindableObject> GetLogicalChildren()
         {
-            return base.GetLogicalChildren().Concat(Columns); //.Concat(RowDecorators);
+            return base.GetLogicalChildren().Concat(Columns);
         }
     }
 }
