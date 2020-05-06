@@ -9,6 +9,9 @@ using DotVVM.Framework.Utils;
 
 namespace DotVVM.Contrib
 {
+    /// <summary>
+    /// Renders a client side GridView with virtualization support.
+    /// </summary>
     [ControlMarkupOptions(AllowContent = false, DefaultContentProperty = nameof(Columns))]
     public sealed class VirtualizedGridView : ItemsControl
     {
@@ -56,6 +59,10 @@ namespace DotVVM.Contrib
         public static readonly DotvvmProperty ColumnsProperty =
             DotvvmProperty.Register<List<GridViewColumn>, VirtualizedGridView>(c => c.Columns);
 
+        /// <summary>
+        /// Gets or sets the height of one row in the grid in pixels.
+        /// </summary>
+        [MarkupOptions(Required = true)]
         public int RowHeight
         {
             get => (int) GetValue(RowHeightProperty);

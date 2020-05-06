@@ -8,7 +8,7 @@ using DotVVM.Framework.Hosting;
 namespace DotVVM.Contrib
 {
     /// <summary>
-    /// Renders a ...
+    /// Renders a client side repeater with virtualization support.
     /// </summary>
     [ControlMarkupOptions(AllowContent = false, DefaultContentProperty = nameof(ItemTemplate))]
     public sealed class VirtualizedRepeater : ItemsControl
@@ -108,7 +108,9 @@ namespace DotVVM.Contrib
         public static readonly DotvvmProperty RenderAsNamedTemplateProperty =
             DotvvmProperty.Register<bool, VirtualizedRepeater>(nameof(RenderAsNamedTemplate), defaultValue: false);
 
-
+        /// <summary>
+        /// Gets or sets a direction in which are elements displayed. Default orientation is <c>Orientation.Vertical</c>.
+        /// </summary>
         public OrientationMode Orientation
         {
             get => (OrientationMode) GetValue(OrientationProperty);
@@ -118,6 +120,10 @@ namespace DotVVM.Contrib
         public static readonly DotvvmProperty OrientationProperty
             = DotvvmProperty.Register<OrientationMode, VirtualizedRepeater>(c => c.Orientation, OrientationMode.Vertical);
 
+        /// <summary>
+        /// Gets or sets the size of one element in pixels.
+        /// </summary>
+        [MarkupOptions(Required = true)]
         public int ElementSize
         {
             get => (int) GetValue(ElementSizeProperty);
