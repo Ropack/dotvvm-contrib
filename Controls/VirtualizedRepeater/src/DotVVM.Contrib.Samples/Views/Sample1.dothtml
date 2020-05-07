@@ -15,19 +15,29 @@
         <div style="flex: 1 1 auto;">
             <h2>Repeater</h2>
             <dot:Repeater DataSource="{value: People}" class="repeater">
-                <div class="card-vertical">
-                    <span>{{value: Id}}</span>
-                    <span>{{value: Name}}</span>
-                </div>
+                <EmptyDataTemplate>
+                    <span>The collection is empty.</span>
+                </EmptyDataTemplate>
+                <ItemTemplate>
+                    <div class="card-vertical">
+                        <span>{{value: Id}}</span>
+                        <span>{{value: Name}}</span>
+                    </div>
+                </ItemTemplate>
             </dot:Repeater>
         </div>
         <div style="flex: 1 1 auto;">
             <h2>Virtualized Repeater</h2>
             <dc:VirtualizedRepeater DataSource="{value: People}" Orientation="Vertical" ElementSize="145" class="repeater">
-                <div>
-                    <span>{{value: Id}}</span>
-                    <span>{{value: Name}}</span>
-                </div>
+                <EmptyDataTemplate>
+                    <span>The collection is empty.</span>
+                </EmptyDataTemplate>
+                <ItemTemplate>
+                    <div>
+                        <span>{{value: Id}}</span>
+                        <span>{{value: Name}}</span>
+                    </div>
+                </ItemTemplate>
             </dc:VirtualizedRepeater>
         </div>
     </div>
