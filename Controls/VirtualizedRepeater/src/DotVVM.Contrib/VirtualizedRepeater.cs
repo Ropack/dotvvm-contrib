@@ -140,6 +140,8 @@ namespace DotVVM.Contrib
 
         protected override void AddAttributesToRender(IHtmlWriter writer, IDotvvmRequestContext context)
         {
+            base.AddAttributesToRender(writer, context);
+
             writer.AddAttribute("class", "virtualized-repeater-container", true, ClassSeparator);
             switch (Orientation)
             {
