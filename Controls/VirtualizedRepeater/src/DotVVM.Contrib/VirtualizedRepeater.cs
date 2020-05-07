@@ -70,19 +70,6 @@ namespace DotVVM.Contrib
             DotvvmProperty.Register<ITemplate, VirtualizedRepeater>(t => t.ItemTemplate);
 
         /// <summary>
-        /// Gets or sets the template containing the elements that separate items.
-        /// </summary>
-        [MarkupOptions(AllowBinding = false, MappingMode = MappingMode.InnerElement)]
-        public ITemplate? SeparatorTemplate
-        {
-            get => (ITemplate?) GetValue(SeparatorTemplateProperty);
-            set => SetValue(SeparatorTemplateProperty, value);
-        }
-
-        public static readonly DotvvmProperty SeparatorTemplateProperty =
-            DotvvmProperty.Register<ITemplate?, VirtualizedRepeater>(t => t.SeparatorTemplate, null);
-
-        /// <summary>
         /// Gets or sets the name of the tag that wraps the Repeater.
         /// </summary>
         [MarkupOptions(AllowBinding = false)]
@@ -94,19 +81,6 @@ namespace DotVVM.Contrib
 
         public static readonly DotvvmProperty WrapperTagNameProperty =
             DotvvmProperty.Register<string, VirtualizedRepeater>(t => t.WrapperTagName, "div");
-
-        /// <summary>
-        /// Gets or sets if the repeater should use inline template (the default, traditional way of doing things) or if it should use Knockout's named template (with the template in &lt;script> tag).
-        /// </summary>
-        [MarkupOptions(AllowBinding = false)]
-        public bool RenderAsNamedTemplate
-        {
-            get => (bool) GetValue(RenderAsNamedTemplateProperty)!;
-            set => SetValue(RenderAsNamedTemplateProperty, value);
-        }
-
-        public static readonly DotvvmProperty RenderAsNamedTemplateProperty =
-            DotvvmProperty.Register<bool, VirtualizedRepeater>(nameof(RenderAsNamedTemplate), defaultValue: false);
 
         /// <summary>
         /// Gets or sets a direction in which are elements displayed. Default orientation is <c>Orientation.Vertical</c>.
@@ -152,7 +126,6 @@ namespace DotVVM.Contrib
         {
             TagName = WrapperTagName;
 
-            RenderContainerAttributes(writer);
             writer.RenderBeginTag(TagName);
 
             var (bindingName, bindingValue) = GetForeachKnockoutBindingGroup();
@@ -165,7 +138,7 @@ namespace DotVVM.Contrib
             writer.RenderBeginTag(TagName);
         }
 
-        private void RenderContainerAttributes(IHtmlWriter writer)
+        protected override void AddAttributesToRender(IHtmlWriter writer, IDotvvmRequestContext context)
         {
             writer.AddAttribute("class", "virtualized-repeater-container", true, ClassSeparator);
             switch (Orientation)
@@ -285,14 +258,6 @@ namespace DotVVM.Contrib
             return container;
         }
 
-        private DotvvmControl GetSeparator(IDotvvmRequestContext context)
-        {
-            var placeholder = new PlaceHolder();
-            placeholder.SetDataContextType(this.GetDataContextType());
-            SeparatorTemplate!.BuildContent(context, placeholder);
-            return placeholder;
-        }
-
         /// <summary>
         /// Performs the data-binding and builds the controls inside the <see cref="Repeater"/>.
         /// </summary>
@@ -307,11 +272,6 @@ namespace DotVVM.Contrib
                 var index = 0;
                 foreach (var item in GetIEnumerableFromDataSource()!)
                 {
-                    if (SeparatorTemplate != null && index > 0)
-                    {
-                        Children.Add(GetSeparator(context));
-                    }
-
                     Children.Add(GetItem(context, item, index,
                         allowMemoizationRetrive: context.IsPostBack && !memoizeReferences, // on GET request we are not initializing the Repeater twice
                         allowMemoizationStore: memoizeReferences
@@ -322,11 +282,6 @@ namespace DotVVM.Contrib
 
             if (renderClientTemplate)
             {
-                if (SeparatorTemplate != null)
-                {
-                    Children.Add(GetSeparator(context));
-                }
-
                 Children.Add(clientSideTemplate = GetItem(context));
             }
 
