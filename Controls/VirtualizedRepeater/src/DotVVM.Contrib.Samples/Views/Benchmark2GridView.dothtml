@@ -1,0 +1,33 @@
+﻿@viewModel DotVVM.Contrib.Samples.ViewModels.Benchmark2ViewModel, DotVVM.Contrib.Samples
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Benchmark 2 - Advanced Grid View</title>
+</head>
+<body>
+    <style>
+        tr {
+            height: 90px;
+        }
+    </style>
+    <dot:GridView DataSource="{value: People}" RenderSettings.Mode="Client">
+        <Columns>
+            <dot:GridViewTextColumn Width="80px" HeaderText="Id" ValueBinding="{value: Id}" />
+            <dot:GridViewTextColumn Width="180px" HeaderText="Name" ValueBinding="{value: Name}" />
+            <dot:GridViewTemplateColumn Width="180px" HeaderText="Controls">
+                <ContentTemplate>
+                    <dot:TextBox Text="Just a textbox"/>
+                    <dot:Button Text="Just a button"/>
+                    <div>Sample text</div>
+                </ContentTemplate>
+            </dot:GridViewTemplateColumn>
+            <dot:GridViewCheckBoxColumn Width="80px" HeaderText="Yes/No" ValueBinding="{value: _root.CheckboxValue}"/>
+        </Columns>
+    </dot:GridView>
+</body>
+</html>
+
+

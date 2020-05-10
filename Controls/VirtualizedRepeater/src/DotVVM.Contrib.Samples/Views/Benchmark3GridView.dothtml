@@ -1,0 +1,80 @@
+﻿@viewModel DotVVM.Contrib.Samples.ViewModels.Benchmark3ViewModel, DotVVM.Contrib.Samples
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Benchmark 3 - Real World Grid View</title>
+</head>
+<body>
+    <style>
+        tr {
+            height: 40px;
+        }
+        tr:nth-child(2n+1) {
+            background-color: #cacaca;
+        }
+        thead tr:first-child {
+            background-color: #ffffff;
+        }
+        table, tr, td, th {
+            border: 1px solid gray;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 8px;
+        }
+        .success {
+            background-color: #5cff5a;
+        }
+        .danger {
+            background-color: #ff1f1f;
+        }
+    </style>
+    <dot:GridView DataSource="{value: RequestForms}" RenderSettings.Mode="Client">
+        <Columns>
+            <dot:GridViewTextColumn ValueBinding="{value: FirstName + " " + LastName}" HeaderText="Name" Width="250px"/>
+            <dot:GridViewTemplateColumn HeaderText="Profile Url" Width="130px">
+                <ContentTemplate>
+                    <a href="{value: ProfileUrl}" target="_blank">{{value: ProfileUrl}}</a>
+
+                </ContentTemplate>
+            </dot:GridViewTemplateColumn>
+            <dot:GridViewTextColumn ValueBinding="{value: Email}" HeaderText="Email" Width="220px"/>
+            <dot:GridViewTextColumn ValueBinding="{value: State}" HeaderText="State" Width="100px"/>
+            <dot:GridViewTextColumn ValueBinding="{value: RequestCreatedDate}" HeaderText="Created" Width="220px"/>
+            <dot:GridViewTemplateColumn Width="100px">
+                <ContentTemplate>
+                    <dot:LinkButton Visible="{value: State == 1}" Text="Approve" Click="{command:  _parent.Approve(_this)}" class="success" >
+                        <PostBack.Handlers>
+                            <dot:ConfirmPostBackHandler Message="{value: "Do you really want to approve request of " + Email + "?"}" />
+                        </PostBack.Handlers>
+                    </dot:LinkButton>
+                </ContentTemplate>
+            </dot:GridViewTemplateColumn>
+            <dot:GridViewTemplateColumn Width="100px">
+                <ContentTemplate>
+                    <dot:LinkButton Visible="{value: State == 1}" Text="Deny" Click="{command:  _parent.Deny(_this)}" class="danger" >
+                        <PostBack.Handlers>
+                            <dot:ConfirmPostBackHandler Message="{value: "Do you really want to deny request of " + Email + "?"}" />
+                        </PostBack.Handlers>
+                    </dot:LinkButton>
+                </ContentTemplate>
+            </dot:GridViewTemplateColumn>
+            <dot:GridViewTemplateColumn Width="100px">
+                <ContentTemplate>
+                    <dot:RouteLink Visible="{value: UserId.HasValue}" RouteName="Benchmark3GridView" Param-Count="{value: _root.Count}" Text="User detail" />
+                </ContentTemplate>
+            </dot:GridViewTemplateColumn>
+        </Columns>
+
+        <EmptyDataTemplate>
+            <h1>There are no requests yet.</h1>
+        </EmptyDataTemplate>
+    </dot:GridView>
+</body>
+</html>
+
+

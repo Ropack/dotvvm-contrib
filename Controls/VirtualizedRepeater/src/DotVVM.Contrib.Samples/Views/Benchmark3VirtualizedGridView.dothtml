@@ -1,0 +1,92 @@
+﻿@viewModel DotVVM.Contrib.Samples.ViewModels.Benchmark3ViewModel, DotVVM.Contrib.Samples
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Benchmark 3 - Real World Grid View (Virtualized)</title>
+</head>
+<body>
+    <style>
+        .virtualized-gridview-cell {
+            border: 1px solid gray;
+            border-right-width: 0px;
+            border-bottom-width: 0px;
+            padding: 8px;
+        }
+
+            .virtualized-gridview-cell:last-child {
+                border-right-width: 1px;
+            }
+
+        .virtualized-gridview-row:last-child .virtualized-gridview-cell {
+            border-bottom-width: 1px;
+        }
+
+        .virtualized-gridview-header .virtualized-gridview-row {
+            height: 40px;
+        }
+
+            .virtualized-gridview-header .virtualized-gridview-row .virtualized-gridview-cell {
+                border-bottom-width: 0px;
+            }
+
+        .virtualized-gridview-row:nth-child(2n+1) {
+            background-color: #cacaca;
+        }
+        .virtualized-gridview-header .virtualized-gridview-row:first-child {
+            background-color: #ffffff;
+        }
+        .success {
+            background-color: #5cff5a;
+        }
+        .danger {
+            background-color: #ff1f1f;
+        }
+    </style>
+    <dc:VirtualizedGridView DataSource="{value: RequestForms}" RowHeight="40">
+        <Columns>
+            <dot:GridViewTextColumn ValueBinding="{value: FirstName + " " + LastName}" HeaderText="Name" Width="267px"/>
+            <dot:GridViewTemplateColumn HeaderText="Profile Url" Width="147px">
+                <ContentTemplate>
+                    <a href="{value: ProfileUrl}" target="_blank">{{value: ProfileUrl}}</a>
+
+                </ContentTemplate>
+            </dot:GridViewTemplateColumn>
+            <dot:GridViewTextColumn ValueBinding="{value: Email}" HeaderText="Email" Width="237px"/>
+            <dot:GridViewTextColumn ValueBinding="{value: State}" HeaderText="State" Width="117px"/>
+            <dot:GridViewTextColumn ValueBinding="{value: RequestCreatedDate}" HeaderText="Created" Width="237px"/>
+            <dot:GridViewTemplateColumn Width="117px">
+                <ContentTemplate>
+                    <dot:LinkButton Visible="{value: State == 1}" Text="Approve" Click="{command:  _parent.Approve(_this)}" class="success" >
+                        <PostBack.Handlers>
+                            <dot:ConfirmPostBackHandler Message="{value: "Do you really want to approve request of " + Email + "?"}" />
+                        </PostBack.Handlers>
+                    </dot:LinkButton>
+                </ContentTemplate>
+            </dot:GridViewTemplateColumn>
+            <dot:GridViewTemplateColumn Width="117px">
+                <ContentTemplate>
+                    <dot:LinkButton Visible="{value: State == 1}" Text="Deny" Click="{command:  _parent.Deny(_this)}" class="danger" >
+                        <PostBack.Handlers>
+                            <dot:ConfirmPostBackHandler Message="{value: "Do you really want to deny request of " + Email + "?"}" />
+                        </PostBack.Handlers>
+                    </dot:LinkButton>
+                </ContentTemplate>
+            </dot:GridViewTemplateColumn>
+            <dot:GridViewTemplateColumn Width="117px">
+                <ContentTemplate>
+                    <dot:RouteLink Visible="{value: UserId.HasValue}" RouteName="Benchmark3GridView" Param-Count="{value: _root.Count}" Text="User detail" />
+                </ContentTemplate>
+            </dot:GridViewTemplateColumn>
+        </Columns>
+
+        <EmptyDataTemplate>
+            <h1>There are no requests yet.</h1>
+        </EmptyDataTemplate>
+    </dc:VirtualizedGridView>
+</body>
+</html>
+
+

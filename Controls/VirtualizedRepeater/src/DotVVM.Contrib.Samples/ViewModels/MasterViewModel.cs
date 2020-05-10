@@ -6,15 +6,16 @@ using DotVVM.Framework.ViewModel;
 
 namespace DotVVM.Contrib.Samples.ViewModels
 {
-	public class MasterViewModel : DotvvmViewModelBase
-	{
+    public class MasterViewModel : DotvvmViewModelBase
+    {
 
-	    public string[] AllSamples => Context.Configuration.RouteTable
+        public string[] AllSamples => Context.Configuration.RouteTable
                                           .Where(r => !r.RouteName.StartsWith("_"))
+                                          .Where(r => !r.RouteName.StartsWith("Benchmark"))
                                           .Select(r => "/" + r.RouteName)
                                           .OrderBy(r => r)
                                           .ToArray();
 
-	}
+    }
 }
 

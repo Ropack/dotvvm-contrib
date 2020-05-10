@@ -1,0 +1,25 @@
+﻿@viewModel DotVVM.Contrib.Samples.ViewModels.Benchmark1ViewModel, DotVVM.Contrib.Samples
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Benchmark 1 - Simple Grid View (Virtualized)</title>
+</head>
+<body>
+    <style>
+        .virtualized-gridview-header .virtualized-gridview-row {
+            height: 90px;
+        }
+    </style>
+    <dc:VirtualizedGridView DataSource="{value: People}" RowHeight="90" class="virtualized-gridview">
+        <Columns>
+            <dot:GridViewTextColumn Width="100px" HeaderText="Id" ValueBinding="{value: Id}" />
+            <dot:GridViewTextColumn Width="200px" HeaderText="Name" ValueBinding="{value: Name}" />
+        </Columns>
+    </dc:VirtualizedGridView>
+</body>
+</html>
+
+

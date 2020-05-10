@@ -1,0 +1,25 @@
+﻿@viewModel DotVVM.Contrib.Samples.ViewModels.Benchmark1ViewModel, DotVVM.Contrib.Samples
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Benchmark 1 - Simple Grid View</title>
+</head>
+<body>
+    <style>
+        tr {
+            height: 90px;
+        }
+    </style>
+    <dot:GridView DataSource="{value: People}" RenderSettings.Mode="Client">
+        <Columns>
+            <dot:GridViewTextColumn Width="80px" HeaderText="Id" ValueBinding="{value: Id}" />
+            <dot:GridViewTextColumn Width="180px" HeaderText="Name" ValueBinding="{value: Name}" />
+        </Columns>
+    </dot:GridView>
+</body>
+</html>
+
+

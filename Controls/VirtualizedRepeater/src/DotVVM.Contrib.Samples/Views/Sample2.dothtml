@@ -50,8 +50,8 @@
             <div class="scrollable-container">
                 <dot:GridView DataSource="{value: People}" RenderSettings.Mode="Client">
                     <Columns>
-                        <dot:GridViewTextColumn Width="180px" HeaderText="Id" ValueBinding="{value: Id}" />
-                        <dot:GridViewTextColumn Width="80px" HeaderText="Name" ValueBinding="{value: Name}" />
+                        <dot:GridViewTextColumn Width="80px" HeaderText="Id" ValueBinding="{value: Id}" />
+                        <dot:GridViewTextColumn Width="180px" HeaderText="Name" ValueBinding="{value: Name}" />
                     </Columns>
                 </dot:GridView>
             </div>
@@ -60,8 +60,8 @@
             <h2>Virtualized GridView</h2>
             <dc:VirtualizedGridView DataSource="{value: People}" RowHeight="90" class="virtualized-gridview scrollable-container">
                 <Columns>
-                    <dot:GridViewTextColumn Width="200px" HeaderText="Id" ValueBinding="{value: Id}" />
-                    <dot:GridViewTextColumn Width="100px" HeaderText="Name" ValueBinding="{value: Name}" />
+                    <dot:GridViewTextColumn Width="100px" HeaderText="Id" ValueBinding="{value: Id}" />
+                    <dot:GridViewTextColumn Width="200px" HeaderText="Name" ValueBinding="{value: Name}" />
                 </Columns>
             </dc:VirtualizedGridView>
         </div>
